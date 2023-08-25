@@ -3,7 +3,7 @@
 
 The Invoice Management System is a web application designed to streamline the process of generating and managing invoices for a educational institution. It allows users to create, view, and manage invoices for student payments, while also providing features to generate PDF invoices with embedded QR codes for easy tracking and verification.
 
-![Invoice Management System](screenshot.png)
+![Invoice Management System](https://github.com/Levi-Chinecherem/invoice-management-system/blob/main/sample.png)
 
 ## Features
 
