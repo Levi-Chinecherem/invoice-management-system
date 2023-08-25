@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white p-6 rounded shadow">
+      <h1 class="text-3xl font-semibold mb-4">Invoice Details</h1>
+      <p><strong>Payment ID:</strong> {{ invoice.payment.id }}</p>
+      <p><strong>Payment Category:</strong> {{ invoice.payment.payment_category.title }}</p>
+      <p><strong>Amount:</strong> {{ invoice.payment.amount }}</p>
+      <p><strong>Approved:</strong> {{ invoice.payment.approved }}</p>
+      <p><strong>PDF:</strong> <a href="{{ invoice.pdf.url }}" download="invoice.pdf">Download Invoice</a></p>
+      
+      {% if invoice.qrcode %}
+      <h2 class="text-xl font-semibold mt-4">Download QR Code</h2>
+      <a href="{{ invoice.qrcode.url }}" download="qrcode.png">Download QR Code</a>
+      <img src="{{ invoice.qrcode.url }}" alt="QR Code" width="100" height="100">
+      {% endif %}
+
+      <h2 class="text-xl font-semibold mt-4">PDF Preview</h2>
+      <div id="pdfViewer" style="width: inherit !important; overflow: scroll; height: 500px;"></div>
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+      <script>
+        // Initialize PDF.js
+        const url = "{{ invoice.pdf.url }}";
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+        // Render PDF using PDF.js
+        const pdfContainer = document.getElementById('pdfViewer');
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+          for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+            pdf.getPage(pageNumber).then(page => {
+              const canvas = document.createElement('canvas');
+              pdfContainer.appendChild(canvas);
+
+              const scale = 1.5;
+              const viewport = page.getViewport({ scale });
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+
+              const renderContext = {
+                canvasContext: canvas.getContext('2d'),
+                viewport,
+              };
+              page.render(renderContext);
+            });
+          }
+        });
+      </script>
+    </div>
+  </div>
+{% endblock %}

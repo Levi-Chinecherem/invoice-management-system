@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="max-w-md mx-auto">
+    <div class="bg-white p-6 rounded shadow">
+      <h1 class="text-3xl font-semibold mb-4">Your Profile</h1>
+      <form method="post">
+        {% csrf_token %}
+        <label class="block mb-2 font-semibold" for="full_name">Full Name:</label>
+        <input class="block w-full py-2 px-4 rounded border focus:outline-none focus:ring focus:border-blue-500" type="text" name="full_name" id="full_name" value="{{ student.full_name }}">
+
+        <label class="block mb-2 font-semibold mt-4" for="department">Department:</label>
+        <input class="block w-full py-2 px-4 rounded border focus:outline-none focus:ring focus:border-blue-500" type="text" name="department" id="department" value="{{ student.department }}">
+
+        <label class="block mb-2 font-semibold mt-4" for="level">Level:</label>
+        <select class="block w-full py-2 px-4 rounded border focus:outline-none focus:ring focus:border-blue-500" name="level" id="level">
+          <option>SELECT</option>
+          <option value="ND1" {% if student.level == 'ND1' %}selected{% endif %}>ND1</option>
+          <option value="ND2" {% if student.level == 'ND2' %}selected{% endif %}>ND2</option>
+          <option value="HND1" {% if student.level == 'HND1' %}selected{% endif %}>HND1</option>
+          <option value="HND2" {% if student.level == 'HND2' %}selected{% endif %}>HND2</option>
+        </select>
+        
+        <label class="block mb-2 font-semibold mt-4" for="school">School:</label>
+        <input class="block w-full py-2 px-4 rounded border focus:outline-none focus:ring focus:border-blue-500" type="text" name="school" id="school" value="{{ student.school }}">
+
+        <label class="block mb-2 font-semibold mt-4" for="sex">Sex:</label>
+        <select class="block w-full py-2 px-4 rounded border focus:outline-none focus:ring focus:border-blue-500" name="sex" id="sex">
+          <option value="Male" {% if student.sex == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if student.sex == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+
+        <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer" type="submit">Update Profile</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

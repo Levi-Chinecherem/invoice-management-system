@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="max-w-md mx-auto">
+    <div class="bg-white p-6 rounded shadow">
+      <h1 class="text-3xl font-semibold mb-4">Scan Payment</h1>
+      <input type="file" id="qrCodeImageInput">
+      <button id="decodeButton">Decode QR Code</button>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('decodeButton').addEventListener('click', async () => {
+      const qrCodeImageInput = document.getElementById('qrCodeImageInput');
+      const file = qrCodeImageInput.files[0];
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const csrfToken = getCookie('csrftoken'); // Function to get CSRF token
+        formData.append('csrfmiddlewaretoken', csrfToken);
+
+        const response = await fetch('/scan_qrcode_camera/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': csrfToken,
+          },
+        });
+
+        const data = await response.json();
+        const resultDiv = document.getElementById('result');
+        resultDiv.textContent = data.message;
+      }
+    });
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
+{% endblock %}

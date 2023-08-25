@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.3/css/all.css">
+    <title>Kenpoly Payment System</title>
+    <style>
+        /* Custom CSS to control navigation toggle */
+        .nav-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        footer{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .spacer{
+            margin-top: 5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <nav class="bg-blue-500 p-4">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-white text-lg font-semibold">
+                <i class="fas fa-university mr-2"></i> Kenpoly Payment System
+            </a>
+            <div class="md:hidden">
+                <button id="nav-toggle" class="text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="hidden md:block">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'scan_qr_code' %}" class="text-white ml-4">Scan Payments</a>
+                    {% else %}
+                        <a href="{% url 'payment' %}" class="text-white ml-4">Make Payment</a>
+                        <a href="{% url 'view_invoices' %}" class="text-white ml-4">Invoice</a>
+                        <a href="{% url 'profile' %}" class="text-white ml-4">Your Profile</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="text-white ml-4">Logout</a>
+                {% else %}
+                    <a href="{% url 'custom_login' %}" class="text-white ml-4">Login</a>
+                    <a href="{% url 'custom_signup' %}" class="text-white ml-4">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="bg-green-200 text-green-800 p-4 mb-4">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+    <div class="container mx-auto p-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div class="spacer"></div>
+    <footer class="bg-gray-200 py-4 text-center">
+        <p>&copy; <span id="current-year"></span> Kenpoly Payment System. All rights reserved. <i class="far fa-smile ml-2"></i></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <script>
+        const navToggle = document.getElementById('nav-toggle');
+        const navItems = document.querySelector('.hidden.md\\:block');
+
+        navToggle.addEventListener('click', function() {
+            navItems.classList.toggle('hidden');
+        });
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
